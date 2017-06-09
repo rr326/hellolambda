@@ -1,0 +1,68 @@
+#!/usr/bin/env python
+
+import click
+import subprocess as sp
+from pathlib import Path
+import sys
+import os
+
+ROOTP = Path(__file__).parent.parent
+
+def run(cmd, **kwargs):
+    print('Command: ', cmd)
+    with sp.Popen(cmd, stdout=sp.PIPE, stderr=sp.STDOUT, bufsize=1, universal_newlines=True, **kwargs) as p:
+        for line in p.stdout:
+            print(line, end='')
+        print('return code: ', p.returncode)
+        if (p.returncode):
+            sys.exit(p.returncode)
+
+def title(*args, **kwargs):
+    print('\n'+'*'*80)
+    print(*args, **kwargs)
+
+def pushapp():
+    title('Build jekyll')
+    cmd = ['jekyll', 'build']
+    run(cmd, cwd=ROOTP/'site')
+
+    title('Pushing static website to S3')
+    cmd = [
+        'aws',
+        '--profile', 'XXXXXXXX',
+        's3',
+        'sync',
+        f'{ROOTP / "site/_site"}',
+        's3://XXXXXXXXXXXXXXXX',
+        '--acl', 'public-read',
+        '--delete'
+        ]
+    run(cmd)
+
+def pushlambda():
+    title('Updating Lambda (with Zappa Update)')
+    cmd = [
+        'zappa', 'update'
+    ]
+    run(cmd)
+
+@click.command()
+@click.option('-s', '--site', default=False, is_flag=True)
+@click.option('-l', '--awslambda', default=False, is_flag=True)
+@click.option('-a', '--all', default=None, is_flag=True)
+def cli(site, awslambda, all):
+    if (not site and not awslambda):
+        all = True
+
+    if (all != None):
+        site=True
+        awslambda = True
+
+    if (site):
+        pushapp()
+
+    if (awslambda):
+        pushlambda()
+
+if __name__ == "__main__":
+    cli()

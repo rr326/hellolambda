@@ -1,0 +1,6 @@
+.direnv
+*.egg-info
+.python-version
+.idea
+__pycache__
+_site

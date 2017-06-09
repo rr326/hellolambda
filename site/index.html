@@ -1,0 +1,87 @@
+---
+layout: default
+---
+
+<h1 style="text-align: center;">Hello, Lambda!</h1>
+
+<br>
+
+
+<h2>Try a form!</h2>
+<p><i>(This will put your name in a DynamoDB database and email the administrator with your form content via SES.)</i></p>
+<div class="row">
+    <form id="feedbackform" class='col-md-offset2 col-md-8'>
+      <div class="form-group">
+        <label for="email" class="control-label">Email</label>
+          <input type="email" class="form-control" name="email" placeholder="Email (required)" required oninvalid="this.setCustomValidity('Email required')">
+      </div>
+
+      <div class="form-group">
+        <label for="notes" class="control-label">Any feedback?</label>
+          <textarea class="form-control" rows="4" name="note"></textarea>
+      </div>
+
+      <div class="form-group">
+          <button class="btn btn-default" onclick='submitFeedbackForm()'>Submit</button>
+      </div>
+    </form>
+</div>
+
+<div id="formresults"></div>
+
+<!-- Selector - hidden for main page, visible for test page. You can oveeride with Jquery in the console. -->
+<div class="hidden">
+    <div class="radio">
+      <label>
+        <input type="radio" name="optionsURL" id="optionsAWS" value="aws" >
+        Use AWS
+      </label>
+    </div>
+    <div class="radio">
+      <label>
+        <input type="radio" name="optionsURL" id="optionsLocalhost" value="localhost" checked>
+        Use localhost
+      </label>
+    </div>
+</div>
+
+<script>
+    var submitFormWaiting = false
+
+    document.addEventListener('DOMContentLoaded', function(){
+        $('#feedbackform').submit((event) => {
+            event.preventDefault()
+        })
+
+        // Set the default
+        if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+            $('body').css('background', '#ffffcc') // It's very easy to forget if you are testing locally or on S3.
+            window.useLocalhost = true
+        } else {
+            window.useLocalhost = false
+        }
+    }, false)
+
+    function submitFeedbackForm() {
+        if (! submitFormWaiting) {
+            submitFormWaiting = true
+            const data = $("#feedbackform").serializeArray().reduce(function(a, x) { a[x.name] = x.value; return a; }, {});
+
+            successFn = function(data, textStatus, jqXHR) {
+                $('#formresults').html('<div class="alert alert-success">Thanks for submitting your information.</div>')
+                $('#feedbackform').find("input, textarea").val("")
+                submitFormWaiting = false
+            }
+
+            errorFn = function(jqXHR, textStatus, errorThrown) {
+                $('#formresults').html('<div class="alert alert-danger">Error submitting your data. Sorry! Error information: '+ textStatus + "  " + errorThrown+"</div>")
+                submitFormWaiting = false
+            }
+
+            apiCall('/api/submit_feedback_form', 'post', data, {debug: true, successFn: successFn, errorFn: errorFn})
+        }
+    }
+
+</script>
+
+

@@ -1,0 +1,15 @@
+{
+    "dev": {
+        "app_function": "hellolambda.api.app",
+        "profile_name": "hellolambda",
+        "s3_bucket": "hellolambda_s3_bucket_name",
+        "keep_warm": false,
+        "cors": true,
+        "manage_roles": false,
+        "role_name": "hellolambda_role",
+
+        // These cause the following error: botocore.errorfactory.BadRequestException: An error occurred (BadRequestException) when calling the UpdateStage operation: CloudWatch Logs role ARN must be set in account settings to enable logging
+        "cloudwatch_log_level": "INFO",
+        "cloudwatch_data_trace": true
+    }
+}

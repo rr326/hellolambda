@@ -1,0 +1,14 @@
+title: Hello, Lambda!
+email: youremail@gmail.com
+description: >
+  My first semi-static site on AWS
+baseurl: ""
+url: "http://www.test.com" # the base hostname & protocol for your site, e.g. http://example.com
+
+markdown: kramdown
+gems:
+  - jekyll-feed
+exclude:
+  - Gemfile
+  - Gemfile.lock
+livereload: true

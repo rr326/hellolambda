@@ -1,0 +1,129 @@
+---
+layout: default
+---
+
+<h1>Test</h1>
+<p>(Put all your interactive test functions on this page.)</p>
+<br>
+<br>
+<div class="well">
+<h4>API Endpoint Selector</h4>
+<p>Use localhost to run your API locally, for easier debugging.</p>
+<div class="radio">
+  <label>
+    <input type="radio" name="optionsURL" id="optionsAWS" value="aws" >
+    Use AWS
+  </label>
+</div>
+<div class="radio">
+  <label>
+    <input type="radio" name="optionsURL" id="optionsLocalhost" value="localhost">
+    Use localhost
+  </label>
+</div></div>
+
+<hr>
+<h2>Test Functions</h2>
+<br>
+<br>
+
+<div class="panel panel-info">
+    <div class="panel-heading">API Results: <span id="apiURL"></span></div>
+    <div class="panel-body"><samp id="apiResults"></samp></div>
+</div>
+<br>
+
+
+<button class="btn-primary btn" onclick="testGet('/test/test_dynamo')">Test Dynamo</button>
+<button class="btn-primary btn" onclick="testGet('/test/test_ses')">Test SES</button>
+
+<button class="btn-primary btn" onclick="testGet('/api/ping', {'text': 'string', 'number': 100, 'bool': true})">Test Ping</button>
+
+
+<hr>
+<h2>Production Endpoint Form</h2>
+<form class="form-horizontal" id="feedbackform">
+  <div class="form-group">
+    <label for="email" class="col-sm-2 control-label">Email</label>
+    <div class="col-sm-8">
+      <input type="email" class="form-control" name="email" placeholder="Email (required)" required  oninvalid="this.setCustomValidity('Email required')">
+    </div>
+  </div>
+
+  <div class="form-group">
+    <label for="notes" class="col-sm-2 control-label">Notes</label>
+    <div class="col-sm-8">
+      <textarea class="form-control" rows="3" name="note"></textarea>
+    </div>
+  </div>
+
+  <div class="form-group">
+    <div class="col-sm-offset-2 col-sm-10">
+      <button class="btn btn-default" onclick='submitFeedbackForm()'>Submit</button>
+    </div>
+  </div>
+</form>
+<div >
+    <span id="formresults"></span>
+</div>
+
+
+
+<script>
+    var submitFormWaiting = false
+
+    document.addEventListener('DOMContentLoaded', function(){
+        $('#feedbackform').submit((event) => {
+            event.preventDefault()
+        })
+
+        if (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1") {
+            $('body').css('background', '#ffffcc')
+            $('#optionsLocalhost').prop('checked', true)
+            window.useLocalhost = true
+        } else {
+            $('#optionsAWS').prop('checked', true)
+            window.useLocalhost = false
+        }
+
+        $('input[type=radio][name=optionsURL]').change(function() {
+            window.useLocalhost = (this.value === 'localhost')
+        })
+    }, false)
+
+
+
+    function submitFeedbackForm() {
+        if (! submitFormWaiting) {
+          submitFormWaiting = true
+          const data = $("#feedbackform").serializeArray().reduce(function(a, x) { a[x.name] = x.value; return a; }, {});
+
+          successFn = function(data, textStatus, jqXHR) {
+              $('#formresults').html('<div class="alert alert-success">Thanks for submitting your information.</div>')
+              $('#feedbackform').find("input, textarea").val("")
+              submitFormWaiting = false
+          }
+
+          errorFn = function(jqXHR, textStatus, errorThrown) {
+              $('#formresults').html('<div class="alert alert-danger">Error submitting your data. Sorry! Error information: '+ textStatus + "  " + errorThrown+"</div>")
+              submitFormWaiting = false
+          }
+
+          apiCall('/api/submit_feedback_form', 'post', data, {debug: true, successFn: successFn, errorFn: errorFn})
+        } else {
+          console.log('Submit button pushed while already waiting for response. Ignoring')
+        }
+    }
+
+    function testGet(path, data) {
+        successFn = function(data, textStatus, jqXHR) {
+            $('#apiResults').html(`<div class="alert alert-success">${data}</div>`)
+        }
+
+        errorFn = function(jqXHR, textStatus, errorThrown) {
+            $('#apiResults').html(`<div class="alert alert-danger">Error: ${textStatus} / ${errorThrown} / ${jqXHR.responseText}</div>`)
+        }
+
+        apiCall(path, 'get', data, {debug: true, successFn: successFn, errorFn: errorFn})
+    }
+</script>
