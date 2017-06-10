@@ -1,8 +1,7 @@
 {
     "dev": {
-        "app_function": "hellolambda.api.app",
-        "profile_name": "hellolambda",
-        "s3_bucket": "hellolambda_s3_bucket",
+        "app_function": "hellolambda_api.api.app",
+        "profile_name": "hellolambda", // set a profile you have defined in your .aws/credentials file
         "keep_warm": false,
         "cors": true,
         "manage_roles": true,

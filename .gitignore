@@ -6,3 +6,4 @@ __pycache__
 _site
 _private_config.py
 hellolambda_api/pyvenv
+private_config.js

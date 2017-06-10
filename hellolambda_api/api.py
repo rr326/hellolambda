@@ -11,7 +11,7 @@ from urllib.parse import urlparse
 from hellolambda_api.limiter import daily_limit
 
 app = Flask(__name__)
-CORS(app, origins=['http://xxx.com', 'http://dev.xxx.com'])
+CORS(app, origins=config.CORS_ACCEPTABLE_ORIGINS)
 
 
 #

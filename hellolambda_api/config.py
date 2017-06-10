@@ -7,6 +7,7 @@ LOCAL_AWS_PROFILE = 'hellolambda'
 AWS_REGION = 'us-west-2'
 APP_NAME = 'hellolambda'
 S3_SITE_BUCKET = 'hellolambda.yourcompany.com'
+CORS_ACCEPTABLE_ORIGINS = ['http://hellolambda.xxx.com']
 
 TEST_PATH_PREFIX = '/test'
 
