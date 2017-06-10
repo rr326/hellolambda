@@ -6,6 +6,7 @@ ROOT_API_FLASK = f'http://localhost:{FLASK_PORT}'
 LOCAL_AWS_PROFILE = 'hellolambda'
 AWS_REGION = 'us-west-2'
 APP_NAME = 'hellolambda'
+S3_SITE_BUCKET = 'hellolambda.yourcompany.com'
 
 TEST_PATH_PREFIX = '/test'
 
@@ -33,6 +34,6 @@ is_debug_server = None
 # You can ignore it.
 #
 try:
-    from private_config import *
+    from hellolambda_api._private_config import *
 except ImportError:
     pass

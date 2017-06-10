@@ -5,6 +5,7 @@ import subprocess as sp
 from pathlib import Path
 import sys
 import os
+from hellolambda_api import config
 
 ROOTP = Path(__file__).parent.parent
 
@@ -29,11 +30,11 @@ def pushapp():
     title('Pushing static website to S3')
     cmd = [
         'aws',
-        '--profile', 'XXXXXXXX',
+        '--profile', config.LOCAL_AWS_PROFILE,
         's3',
         'sync',
         f'{ROOTP / "site/_site"}',
-        's3://XXXXXXXXXXXXXXXX',
+        f's3://{config.S3_SITE_BUCKET}',
         '--acl', 'public-read',
         '--delete'
         ]
