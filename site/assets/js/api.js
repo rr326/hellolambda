@@ -1,5 +1,7 @@
 function baseURL() {
-    return (window.useLocalhost) ? 'API_LOCAL_BASE' : "API_AWS_BASE"
+    return (window.useLocalhost)
+        ? HLCONFIG.API_LOCAL_BASE
+        : `http://localhost:${HLCONFIG.API_AWS_BASE}`
 }
 
 function apiURL(path) {

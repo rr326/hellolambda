@@ -28,3 +28,11 @@ MAX_EMAIL_PER_DAY = 100
 # Global - Ugly but easy, and easier than flask.g
 is_debug_server = None
 
+#
+# This is I can test my code while still having a clean config file.
+# You can ignore it.
+#
+try:
+    import * from private_config
+except ImportError:
+    pass
