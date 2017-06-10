@@ -33,6 +33,6 @@ is_debug_server = None
 # You can ignore it.
 #
 try:
-    import * from private_config
+    from private_config import *
 except ImportError:
     pass
