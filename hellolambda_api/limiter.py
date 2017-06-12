@@ -7,6 +7,17 @@ from hellolambda_api.config import EMAIL
 
 
 class daily_limit(object):
+    """
+    This is a simple way to limit the number of times a function will be called in a day.
+    (It requires a DynamoDB table to store its data)
+    The wrapped function will return None if it is bypassed.
+
+    Usage:
+
+    @daily_limit('some_function', 1000)
+    def some_function():
+        pass
+    """
     def __init__(self, key, max_per_day):
         self.key = key
         self.max = max_per_day
@@ -52,12 +63,12 @@ class daily_limit(object):
             return boto3.Session()
 
     def get_todays_calls(self):
-        rsp = self.table.get_item(Key={'utcdatetime': self.dynamodb_key()})
+        rsp = self.table.get_item(Key={'pk': self.dynamodb_key()})
         return rsp.get('Item', {}).get('num_calls', 0)
 
     def set_todays_calls(self, val):
         rsp = self.table.put_item(
-            Item={'utcdatetime': self.dynamodb_key(),
+            Item={'pk': self.dynamodb_key(),
                   'num_calls': val}
         )
 

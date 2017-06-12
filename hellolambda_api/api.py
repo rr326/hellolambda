@@ -48,15 +48,11 @@ def send_assets(path):
     return send_from_directory(config.SITE_ASSETS_DIR, path)
 
 def dynamodb_key():
-    """
-    My primary key field and naming is bad, but functional for now.
-    TODO - fix
-    """
-    return dt.utcnow().isoformat()
+    return 'formfield-' + dt.utcnow().isoformat()
 
 def is_test_url(url):
     parsed = urlparse(url)
-    return not (parsed.hostname in ['xxx.com', 'www.xxx.com'])
+    return not (parsed.hostname in config.PRODUCTION_DOMAINS)
 
 def make_valid_item(item_dict):
     # Replaces empty values in dict with ' ' (dynamodb.put doesn't accept '')
@@ -89,7 +85,7 @@ def send_email(*args, **kwargs):
 @app.route(f'{config.TEST_PATH_PREFIX}/test_dynamo')
 @catch_errors()
 def test_dynamo():
-    item={'utcdatetime': dynamodb_key(),
+    item={'pk': dynamodb_key(),
               'note': 'sample data',
               'useragent': request.environ.get('HTTP_USER_AGENT', ' '),
               'remote_addr': request.environ.get('REMOTE_ADDR', ' '),
@@ -102,9 +98,9 @@ def test_dynamo():
 @catch_errors()
 def test_ses():
     response = send_email(
-        Source='email_you_have_validated_in_ses@gmail.com',
+        Source=config.EMAIL['from_addr'],
         Destination={
-            'ToAddresses': ['admin_email@gmail.com']
+            'ToAddresses': [config.EMAIL['notification_addr']]
         },
         Message={
             'Subject': {
@@ -153,7 +149,7 @@ def submit_feedback_form():
 
     # Insert in db
     db_rsp = dynamo_put(
-        Item=make_valid_item({'utcdatetime': dynamodb_key(),
+        Item=make_valid_item({'pk': dynamodb_key(),
               **form_data,
               'useragent': request.environ.get('HTTP_USER_AGENT', ' '),
               'remote_addr': request.environ.get('REMOTE_ADDR', ' '),

@@ -8,6 +8,7 @@ AWS_REGION = 'us-west-2'
 APP_NAME = 'hellolambda'
 S3_SITE_BUCKET = 'hellolambda.yourcompany.com'
 CORS_ACCEPTABLE_ORIGINS = ['http://hellolambda.xxx.com']
+PRODUCTION_DOMAINS = ['hellolambda.com', 'www.hellolambda.com']
 
 TEST_PATH_PREFIX = '/test'
 
@@ -31,8 +32,8 @@ MAX_EMAIL_PER_DAY = 100
 is_debug_server = None
 
 #
-# This is I can test my code while still having a clean config file.
-# You can ignore it.
+# This is so I can test my code while still having a clean config file for the boilerplate.
+# You can delete it or ignore it.
 #
 try:
     from hellolambda_api._private_config import *
