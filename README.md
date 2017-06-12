@@ -4,10 +4,13 @@ This is a boilerplate site to help you get started building a simple semi-static
 * Backend functionality with flask, powered by lambda and API Gateway, with deployment help from zappa.io
 * Simple backend functionality that processes a form, stores the data in a DynamoDB database and sends an email to the administrator with SES
 
-You can read about the motivation behind it [here](https://medium.com/@rrosen326/a-semi-static-site-with-s3-lambda-jekyll-and-flask-93c33c0fc820)
+You can read about the motivation behind it [here](https://medium.com/@rrosen326/a-semi-static-site-with-s3-lambda-jekyll-and-flask-93c33c0fc820).
 
-## Get Started
+If you know a bit about AWS, you should be up and running in an hour.  If you've never used AWS, budget a day to a day and a half. 
 
+## Instructions
+
+1. Clone this repo
 1. Read the [Zappa.io documentation](https://github.com/Miserlou/Zappa)
 1. Set up python
     ```
@@ -77,6 +80,11 @@ Now lets get your services running: A DynamoDB table to store the form content, 
 ### SES (Simple Email Service)
 Setting up SES is a bit more involved.  Follow [the documentation](https://aws.amazon.com/documentation/ses/).  When complete, do the same process as you did with DynamoDB - test locally with your python debugger, zappa update, test on AWS. 
 
-## Production Form Test
-Once you've got all your individual services tested, its time to test your production form. 
+## Production
+Once you've got all your individual services tested, its time to test your production form.
+
+Once that's complete, you should probably either remove your test page or hide it, because it's probably not good to have your test functions out there. To hide it, create a long random number (eg: a [SHA-256](http://www.xorbin.com/tools/sha256-hash-calculator)).  Rename site/test to site/<LONG_RANDOM>.  In config.py, set 'TEST_PATH_PREFIX' to <LONG_RANDOM>.  Redploy (`bin/update`).  Then to try your test page, you'll have to copy / paste it the first time, but after that when you start typing, the hepful browser will autocomplete it. 
+
+## Pull Requests, Please
+If you find any errors, please submit a PR. If you don't know how, just submit an issue. 
 

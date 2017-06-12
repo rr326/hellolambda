@@ -5,9 +5,14 @@
         "keep_warm": false,
         "cors": true,
         "manage_roles": true,
-
-        // These cause the following error: botocore.errorfactory.BadRequestException: An error occurred (BadRequestException) when calling the UpdateStage operation: CloudWatch Logs role ARN must be set in account settings to enable logging
         "cloudwatch_log_level": "INFO",
-        "cloudwatch_data_trace": true
+        "cloudwatch_data_trace": true,
+        "extra_permissions": [
+            {
+            "Effect": "Allow",
+            "Action": ["ses:*"],
+            "Resource": "*"
+            }
+        ],
     }
 }
