@@ -6,7 +6,7 @@ This is a boilerplate site to help you get started building a simple semi-static
 
 You can read about the motivation behind it [here](https://medium.com/@rrosen326/a-semi-static-site-with-s3-lambda-jekyll-and-flask-93c33c0fc820).
 
-[Here](http://hellolambda.k2company.com/) is the results of this repo, running on S3, and Lambda, sending an email to the Administrator (me) and inserting a record into a DynamoDB. 
+[Here](http://hellolambda.k2company.com/) is the result of this repo, running on S3, and Lambda, sending an email to the Administrator (me) and inserting a record into a DynamoDB. 
 
 If you know a bit about AWS, you should be up and running in an hour.  If you've never used AWS, budget a day. 
 
