@@ -6,7 +6,9 @@ This is a boilerplate site to help you get started building a simple semi-static
 
 You can read about the motivation behind it [here](https://medium.com/@rrosen326/a-semi-static-site-with-s3-lambda-jekyll-and-flask-93c33c0fc820).
 
-If you know a bit about AWS, you should be up and running in an hour.  If you've never used AWS, budget a day to a day and a half. 
+[Here](http://hellolambda.k2company.com/) is the results of this repo, running on S3, and Lambda, sending an email to the Administrator (me) and inserting a record into a DynamoDB. 
+
+If you know a bit about AWS, you should be up and running in an hour.  If you've never used AWS, budget a day. 
 
 ## Instructions
 
@@ -42,8 +44,8 @@ If you know a bit about AWS, you should be up and running in an hour.  If you've
     1. `zappa deploy`
     1. copy the API Gateway url it prints at the end. EG:  
        `Deployment complete!: https://xxx.execute-api.us-west-2.amazonaws.com/dev`
-    1. Test it in the browser (append '/api/ping?does_it_work=yes'):  
-       `https://xxx.execute-api.us-west-2.amazonaws.com/dev/api/ping?does_it_work=yes`
+    1. Test it in the browser (append '/api/ping'):  
+       `https://xxx.execute-api.us-west-2.amazonaws.com/dev/api/ping`
     1. If it gives you an internal error, check your CloudWatch logs
 1. Test ping in your static test page
     1. `http://hellolambda.xxx.com/test/`
@@ -83,7 +85,13 @@ Setting up SES is a bit more involved.  Follow [the documentation](https://aws.a
 ## Production
 Once you've got all your individual services tested, its time to test your production form.
 
-Once that's complete, you should probably either remove your test page or hide it, because it's probably not good to have your test functions out there. To hide it, create a long random number (eg: a [SHA-256](http://www.xorbin.com/tools/sha256-hash-calculator)).  Rename site/test to site/<LONG_RANDOM>.  In config.py, set 'TEST_PATH_PREFIX' to <LONG_RANDOM>.  Redploy (`bin/update`).  Then to try your test page, you'll have to copy / paste it the first time, but after that when you start typing, the hepful browser will autocomplete it. 
+Once that's complete, you should probably either remove your test page or hide it, because it's probably not good to have your test functions out there. To hide it, create a long random number (eg: a [SHA-256](http://www.xorbin.com/tools/sha256-hash-calculator)).  Rename site/test to site/<LONG_RANDOM>.  In config.py, set 'TEST_PATH_PREFIX' to <LONG_RANDOM>.  Redploy (`bin/update`).  Then to try your test page, you'll have to copy / paste it the first time, but after that when you start typing, the browser will autocomplete it. 
+
+## Optional
+You might also want to implement
+* An [AWS Budget](http://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/budgets-managing-costs.html) with an [SNS](https://aws.amazon.com/sns/) alert to notify you if costs exceed your expectations
+* [AWS Config](https://aws.amazon.com/config/) to track changes over time
+* [@daily_limit decorator](https://github.com/rr326/hellolambda/blob/master/hellolambda_api/limiter.py) - Decide if you want to use this and what limits to use. 
 
 ## Pull Requests, Please
 If you find any errors, please submit a PR. If you don't know how, just submit an issue. 
